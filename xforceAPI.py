@@ -57,9 +57,9 @@ def printMalware(xforceIPElt):
     print("Malware for")
     _printSection(xforceIPElt["/malware"])
 
-def printDNS(xforceIPElt):
+def printDNS(xforceDNS):
     print("DNS for")
-    _printSection(xforceIPElt["/resolve"])
+    _printSection(xforceDNS["/resolve"])
 
 ### Utility functions to display received objects in shell
 
