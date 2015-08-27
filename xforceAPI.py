@@ -36,7 +36,10 @@ def get_ip_infos(ip):
     for arg in ["/history","/malware"]:
         url=base+"/ipr"+arg+"/"+ip
         print(arg,url)
-        dico[arg]=_get_response_json_object(url)
+        try:
+            dico[arg]=_get_response_json_object(url)
+        except Exception as ex:
+            errorHandle(ex)
     return dico
 
 def get_url_infos(url):
@@ -80,44 +83,55 @@ def get_dns_infos(dns):
     for arg in ["/resolve"]:
         url=base+arg+"/"+dns
         print(arg,url)
-        dico[arg]=_get_response_json_object(url)
+        try:
+            dico[arg]=_get_response_json_object(url)
+        except Exception as ex:
+            errorHandle(ex)
     return dico
 
 ### Print Objects 
 
 def printIpHistory(xforceIPElt):
-    print("History for IP :")
-    _printSection(xforceIPElt["/history"])
+    try:
+        print("History for IP :")
+        _printSection(xforceIPElt["/history"])
+    except Exception as ex:
+        errorHandle(ex)
 
 def printIpMalware(xforceIPElt):
-    print("Malware for IP :")
-    _printSection(xforceIPElt["/malware"])
+    try:
+        print("Malware for IP :")
+        _printSection(xforceIPElt["/malware"])
+    except Exception as ex:
+        errorHandle(ex)
 
 def printUrl(xforceUrlElt):
-    print("Url :")
     try:
+        print("Url :")
         _printInfo(xforceUrlElt[""])
     except Exception as ex:
         errorHandle(ex)
     try:
+        print("Url :")
         _printSection(xforceUrlElt["/malware"])
     except Exception as ex:
         errorHandle(ex)
 
 def printMalware(xforceMalwareElt):
-    print("Malware :")
     try:
+        print("Malware :")
         _printSection(xforceMalwareElt[""])
     except Exception as ex:
         errorHandle(ex)
     try:
+        print("Malware :")
         _printSection(xforceMalwareElt["/familyext"])
     except Exception as ex:
         errorHandle(ex)
 
 def printVulnerabilitiesByName(xforceVulnerabilitiesElt):
-    print("Vulnerabilities :")
     try:
+        print("Vulnerabilities :")
         print("\n#Search by name")
         _printSection(xforceVulnerabilitiesElt["/fulltext"])
     except Exception as ex:
@@ -125,6 +139,7 @@ def printVulnerabilitiesByName(xforceVulnerabilitiesElt):
 
 def printVulnerabilitiesByRef(xforceVulnerabilitiesElt):
     try:
+        print("Vulnerabilities :")
         print("\n#Search by ref eg : CVE")
         for sect in (xforceVulnerabilitiesElt["/search"]):
             _printSection(sect)
@@ -133,6 +148,7 @@ def printVulnerabilitiesByRef(xforceVulnerabilitiesElt):
 
 def printVulnerabilitiesByMsid(xforceVulnerabilitiesElt):
     try:
+        print("Vulnerabilities :")
         print("\n#Search by ref Microsoft Bulletin : MSID")
         r_msid=xforceVulnerabilitiesElt["/msid"]
         if type(r_msid)==type("") or type(r_msid)==type(u""):
@@ -143,8 +159,11 @@ def printVulnerabilitiesByMsid(xforceVulnerabilitiesElt):
         errorHandle(ex)
 
 def printDNS(xforceDNS):
-    print("DNS resolve :")
-    _printSection(xforceDNS["/resolve"])
+    try:
+        print("DNS resolve :")
+        _printSection(xforceDNS["/resolve"])
+    except Exception as ex:
+        errorHandle(ex)
 
 ### Utility functions to display received objects in shell
 
