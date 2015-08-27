@@ -39,6 +39,17 @@ def get_ip_infos(ip):
         dico[arg]=_get_response_json_object(url)
     return dico
 
+def get_url_infos(url):
+    dico={}
+    for arg in ["","/malware"]:
+        url=base+"/url"+arg+"/"+url
+        print(arg,url)
+        try:
+            dico[arg]=_get_response_json_object(url)
+        except Exception as ex:
+            print(ex.message)
+    return dico
+
 def get_malware_infos(malware):
     dico={}
     for arg in ["","/familyext"]:
@@ -67,6 +78,17 @@ def printIpHistory(xforceIPElt):
 def printIpMalware(xforceIPElt):
     print("Malware for IP :")
     _printSection(xforceIPElt["/malware"])
+
+def printUrl(xforceUrlElt):
+    print("Url :")
+    try:
+        _printInfo(xforceUrlElt[""])
+    except Exception as ex:
+        print(ex.message)
+    try:
+        _printSection(xforceUrlElt["/malware"])
+    except Exception as ex:
+        print(ex.message)
 
 def printMalware(xforceMalwareElt):
     print("Malware :")
