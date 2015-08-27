@@ -61,6 +61,19 @@ def get_malware_infos(malware):
             print(ex.message)
     return dico
 
+def get_vulnerabilities_infos(vulnerabilities):
+    dico={}
+    for arg in ["/fulltext","/search","/msid"]:
+        url=base+"/vulnerabilities"+arg+"/"+vulnerabilities
+        if arg == "/fulltext":
+            url=base+"/vulnerabilities"+arg+"?q="+vulnerabilities
+        print(arg,url)
+        try:
+            dico[arg]=_get_response_json_object(url)
+        except Exception as ex:
+            print(ex.message)
+    return dico
+
 def get_dns_infos(dns):
     dico={}
     for arg in ["/resolve"]:
@@ -84,22 +97,49 @@ def printUrl(xforceUrlElt):
     try:
         _printInfo(xforceUrlElt[""])
     except Exception as ex:
-        print(ex.message)
+        print(ex,ex.message)
     try:
         _printSection(xforceUrlElt["/malware"])
     except Exception as ex:
-        print(ex.message)
+        print(ex,ex.message)
 
 def printMalware(xforceMalwareElt):
     print("Malware :")
     try:
         _printSection(xforceMalwareElt[""])
     except Exception as ex:
-        print(ex.message)
+        print(ex,ex.message)
     try:
         _printSection(xforceMalwareElt["/familyext"])
     except Exception as ex:
-        print(ex.message)
+        print(ex,ex.message)
+
+def printVulnerabilitiesByName(xforceVulnerabilitiesElt):
+    print("Vulnerabilities :")
+    try:
+        print("\n#Search by name")
+        _printSection(xforceVulnerabilitiesElt["/fulltext"])
+    except Exception as ex:
+        print(ex,ex.message)
+
+def printVulnerabilitiesByRef(xforceVulnerabilitiesElt):
+    try:
+        print("\n#Search by ref eg : CVE")
+        for sect in (xforceVulnerabilitiesElt["/search"]):
+            _printSection(sect)
+    except Exception as ex:
+        print(ex,ex.message)
+
+def printVulnerabilitiesByMsid(xforceVulnerabilitiesElt):
+    try:
+        print("\n#Search by ref Microsoft Bulletin : MSID")
+        r_msid=xforceVulnerabilitiesElt["/msid"]
+        if type(r_msid)==type("") or type(r_msid)==type(u""):
+            _printInfo(r_msid)
+        else:
+            _printInfo(r_msid)
+    except Exception as ex:
+        print(ex,ex.message)
 
 def printDNS(xforceDNS):
     print("DNS resolve :")
