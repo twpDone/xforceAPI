@@ -3,7 +3,11 @@
 import urllib2
 import json
 
-def get_auth_token():
+### Functions and definitions needed to use the API
+
+base="https://xforce-api.mybluemix.net"
+
+def _get_auth_token():
     '''
     get an auth token
     '''
@@ -14,33 +18,50 @@ def get_auth_token():
     token_string=json_obj["token"].encode("ascii","ignore")
     return token_string
 
-def get_response_json_object(url, auth_token):
+def _get_response_json_object(url):
     '''
     returns json object with info
     '''
-    auth_token=get_auth_token()
+    auth_token=_get_auth_token()
     req=urllib2.Request(url, None, {"Authorization": "Bearer %s" %auth_token})
     response=urllib2.urlopen(req)
     html=response.read()
     json_obj=json.loads(html)
     return json_obj
 
-base="https://xforce-api.mybluemix.net"
+### Get results from API
 
 def get_ip_infos(ip):
     dico={}
     for arg in ["/history","/malware"]:
         url=base+"/ipr"+arg+"/"+ip
         print(arg,url)
-        dico[arg]=get_response_json_object(url, get_auth_token)
+        dico[arg]=_get_response_json_object(url)
     return dico
 
+def get_dns_infos(dns):
+    dico={}
+    for arg in ["/resolve"]:
+        url=base+arg+"/"+dns
+        print(arg,url)
+        dico[arg]=_get_response_json_object(url)
+    return dico
+
+### Print Objects 
 
 def printHistory(xforceIPElt):
     print("History for")
     _printSection(xforceIPElt["/history"])
 
+def printMalware(xforceIPElt):
+    print("Malware for")
+    _printSection(xforceIPElt["/malware"])
 
+def printDNS(xforceIPElt):
+    print("DNS for")
+    _printSection(xforceIPElt["/resolve"])
+
+### Utility functions to display received objects in shell
 
 def _printSection(xforceSection):
     for key in xforceSection:
@@ -56,13 +77,21 @@ def _printSection(xforceSection):
 
 def _printInfo(xforceInfo):
     #parcours dictionaire
-    print("________")
-    for key in xforceInfo:
-        subItem=xforceInfo[key]
-        if type(subItem)==type({}):
-            if len(subItem) > 0 :
-                for subkey in  subItem:
-                    print(subkey+": "+str(subItem[subkey]))
-        else:
-            print(key+": "+str(subItem))
+    if type(xforceInfo)==type("") or type(xforceInfo)==type(u""):
+        print(xforceInfo)
+    elif type(xforceInfo)==type([]):
+        print("________")
+        for elt in xforceInfo:
+            _printInfo(elt)
+    else:
+        print("________")
+        for key in xforceInfo:
+            subItem=xforceInfo[key]
+            if type(subItem)==type({}):
+                if len(subItem) > 0 :
+                    for subkey in  subItem:
+                        print(subkey+": "+str(subItem[subkey]))
+            else:
+                print(key+": "+str(subItem))
+
 
