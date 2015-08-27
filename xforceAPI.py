@@ -47,7 +47,7 @@ def get_url_infos(url):
         try:
             dico[arg]=_get_response_json_object(url)
         except Exception as ex:
-            print(ex.message)
+            errorHandle(ex)
     return dico
 
 def get_malware_infos(malware):
@@ -58,6 +58,7 @@ def get_malware_infos(malware):
         try:
             dico[arg]=_get_response_json_object(url)
         except Exception as ex:
+            errorHandle(ex)
             print(ex.message)
     return dico
 
@@ -71,7 +72,7 @@ def get_vulnerabilities_infos(vulnerabilities):
         try:
             dico[arg]=_get_response_json_object(url)
         except Exception as ex:
-            print(ex.message)
+            errorHandle(ex)
     return dico
 
 def get_dns_infos(dns):
@@ -97,22 +98,22 @@ def printUrl(xforceUrlElt):
     try:
         _printInfo(xforceUrlElt[""])
     except Exception as ex:
-        print(ex,ex.message)
+        errorHandle(ex)
     try:
         _printSection(xforceUrlElt["/malware"])
     except Exception as ex:
-        print(ex,ex.message)
+        errorHandle(ex)
 
 def printMalware(xforceMalwareElt):
     print("Malware :")
     try:
         _printSection(xforceMalwareElt[""])
     except Exception as ex:
-        print(ex,ex.message)
+        errorHandle(ex)
     try:
         _printSection(xforceMalwareElt["/familyext"])
     except Exception as ex:
-        print(ex,ex.message)
+        errorHandle(ex)
 
 def printVulnerabilitiesByName(xforceVulnerabilitiesElt):
     print("Vulnerabilities :")
@@ -120,7 +121,7 @@ def printVulnerabilitiesByName(xforceVulnerabilitiesElt):
         print("\n#Search by name")
         _printSection(xforceVulnerabilitiesElt["/fulltext"])
     except Exception as ex:
-        print(ex,ex.message)
+        errorHandle(ex)
 
 def printVulnerabilitiesByRef(xforceVulnerabilitiesElt):
     try:
@@ -128,7 +129,7 @@ def printVulnerabilitiesByRef(xforceVulnerabilitiesElt):
         for sect in (xforceVulnerabilitiesElt["/search"]):
             _printSection(sect)
     except Exception as ex:
-        print(ex,ex.message)
+        errorHandle(ex)
 
 def printVulnerabilitiesByMsid(xforceVulnerabilitiesElt):
     try:
@@ -139,7 +140,7 @@ def printVulnerabilitiesByMsid(xforceVulnerabilitiesElt):
         else:
             _printInfo(r_msid)
     except Exception as ex:
-        print(ex,ex.message)
+        errorHandle(ex)
 
 def printDNS(xforceDNS):
     print("DNS resolve :")
@@ -179,3 +180,10 @@ def _printInfo(xforceInfo):
                 print(key+": "+str(subItem))
 
 
+### Error Handeling Functions
+
+def errorHandle(exception):
+    if type(exception) == KeyError:
+        print("This index is empty or dont exists")
+    else:
+        print(exception,exception.message)
