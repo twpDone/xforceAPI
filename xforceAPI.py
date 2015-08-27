@@ -39,6 +39,17 @@ def get_ip_infos(ip):
         dico[arg]=_get_response_json_object(url)
     return dico
 
+def get_malware_infos(malware):
+    dico={}
+    for arg in ["","/familyext"]:
+        url=base+"/malware"+arg+"/"+malware
+        print(arg,url)
+        try:
+            dico[arg]=_get_response_json_object(url)
+        except Exception as ex:
+            print(ex.message)
+    return dico
+
 def get_dns_infos(dns):
     dico={}
     for arg in ["/resolve"]:
@@ -49,16 +60,27 @@ def get_dns_infos(dns):
 
 ### Print Objects 
 
-def printHistory(xforceIPElt):
-    print("History for")
+def printIpHistory(xforceIPElt):
+    print("History for IP :")
     _printSection(xforceIPElt["/history"])
 
-def printMalware(xforceIPElt):
-    print("Malware for")
+def printIpMalware(xforceIPElt):
+    print("Malware for IP :")
     _printSection(xforceIPElt["/malware"])
 
+def printMalware(xforceMalwareElt):
+    print("Malware :")
+    try:
+        _printSection(xforceMalwareElt[""])
+    except Exception as ex:
+        print(ex.message)
+    try:
+        _printSection(xforceMalwareElt["/familyext"])
+    except Exception as ex:
+        print(ex.message)
+
 def printDNS(xforceDNS):
-    print("DNS for")
+    print("DNS resolve :")
     _printSection(xforceDNS["/resolve"])
 
 ### Utility functions to display received objects in shell
