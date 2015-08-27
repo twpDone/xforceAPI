@@ -28,12 +28,12 @@ def get_response_json_object(url, auth_token):
 base="https://xforce-api.mybluemix.net"
 
 def get_ip_infos(ip):
-    dict={}
+    dico={}
     for arg in ["/history","/malware"]:
         url=base+"/ipr"+arg+"/"+ip
         print(arg,url)
-        dict[arg]=get_response_json_object(url, get_auth_token)
-    return dict
+        dico[arg]=get_response_json_object(url, get_auth_token)
+    return dico
 
 
 def printHistory(xforceIPElt):
