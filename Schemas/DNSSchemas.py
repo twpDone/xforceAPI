@@ -28,7 +28,8 @@ class DNSRecord(dict):
             self["first"]= first
         else:
             # dict
-            self=jsonDict
+            for key in jsonDict:
+                self[key]=jsonDict[key]
 
     def __str__(self):
         retStr=""
@@ -59,7 +60,8 @@ class DNSMX(dict):
             self["priority"]= priority
         else:
             # dict
-            self=jsonDict
+            for key in jsonDict:
+                self[key]=jsonDict[key]
 
     def __str__(self):
         retStr=""
@@ -89,7 +91,14 @@ class DNSPassive(dict):
             self["records"]= records
         else:
             # dict
-            self=jsonDict
+            importDict=jsonDict
+            for key in importDict:
+                if key == "records":
+                    self[key]=[]
+                    for dnsRecord in importDict[key]:
+                        self[key].append(DNSRecord(jsonDict=dnsRecord))
+                else:
+                    self[key]=importDict[key]
 
     def __str__(self):
         retStr="\nQuery : "+str(self["query"])+"\n"
@@ -134,8 +143,17 @@ class DNSObj(dict):
 
         else:
             # dict
-            self=jsonDict
-
+            importDict=jsonDict
+            for key in importDict:
+                if key == "MX":
+                    self[key]=[]
+                    for MXElt in jsonDict[key]:
+                        self[key].append(DNSMX(jsonDict=MXElt))
+                elif key == "Passive":
+                    self[key]=DNSPassive(jsonDict=importDict[key])
+                else:
+                    self[key]=jsonDict[key]
+        
     def __str__(self):
         retStr="\n"
         retStr+=self.printARecords()
@@ -148,37 +166,54 @@ class DNSObj(dict):
         
     def printARecords(self): 
         retStr=""
-        for ARecord in self["A"]:
-            retStr+="A: "+str(ARecord)+"\n"
+        try:
+            for ARecord in self["A"]:
+                retStr+="A: "+str(ARecord)+"\n"
+        except KeyError:
+            pass
         return retStr
 
     def printAAAARecords(self): 
         retStr=""
-        for AAAARecord in self["AAAA"]:
-            retStr+="AAAA: "+str(AAAARecord)+"\n"
+        try:
+            for AAAARecord in self["AAAA"]:
+                retStr+="AAAA: "+str(AAAARecord)+"\n"
+        except KeyError:
+            pass
         return retStr
 
     def printTXTRecords(self): 
         retStr=""
-        for TXTRecord in self["TXT"]:
-            retStr+="TXT: "+str(TXTRecord)+"\n"
+        try:
+            for TXTRecord in self["TXT"]:
+                retStr+="TXT: "+str(TXTRecord)+"\n"
+        except KeyError:
+            pass
         return retStr
 
     def printRDNSRecords(self): 
         retStr=""
-        for RDNSRecord in self["RDNS"]:
-            retStr+="RDNS: "+str(RDNSRecord)+"\n"
+        try:
+            for RDNSRecord in self["RDNS"]:
+                retStr+="RDNS: "+str(RDNSRecord)+"\n"
+        except KeyError:
+            pass
         return retStr
 
     def printMXRecords(self): 
         retStr=""
-        for MXRecord in self["MX"]:
-            retStr+="MX: "+str(MXRecord)+"\n"
+        try:
+            for MXRecord in self["MX"]:
+                retStr+="MX: "+str(MXRecord)+"\n"
+        except KeyError:
+            pass
         return retStr
 
     def printPassiveRecords(self): 
         retStr=""
-        for PassiveRecord in self["Passive"]:
-            retStr+="Passive: "+str(PassiveRecord)+"\n"
+        try:
+            retStr="Passive: "+str(self["Passive"])+"\n"
+        except KeyError:
+            pass
         return retStr
 
