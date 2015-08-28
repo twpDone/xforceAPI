@@ -92,8 +92,9 @@ class DNSPassive(dict):
             self=jsonDict
 
     def __str__(self):
-        retStr="\nQuery : "+self["query"]+"\n"
+        retStr="\nQuery : "+str(self["query"])+"\n"
         retStr+=self.printdnsRecords()
+        return retStr
 
     def printdnsRecords(self):
         retStr=""
